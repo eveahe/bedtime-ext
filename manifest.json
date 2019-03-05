@@ -11,6 +11,11 @@
       "background_script.js"
     ]
   },
+  "browser_action": {
+    "default_icon": "icons/redsquare.png",
+    "default_title": "Bedtime",
+    "default_popup": "popup/set_bedtime.html"
+  },
   "content_scripts": [
     {
       "matches": [

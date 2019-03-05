@@ -7,10 +7,10 @@ console.log(n);
 
 const h = document.body.getElementsByClassName('document-title')
 // document.getElementByClassName('document-title').textContent = n;
-if(n > 20){
+if(n > 21 || n < 6){
     const sleepDiv = document.createElement("div");
     sleepDiv.textContent = "It is " + n + " o'clock. Go to Sleep!!!!";
-    document.body.appendChild(div);
+    document.body.appendChild(sleepDiv);
     sleepDiv.className = 'sleepMessage'
-}
+} 
 
