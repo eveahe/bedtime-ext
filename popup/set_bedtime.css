@@ -19,11 +19,11 @@ html, body {
     cursor: pointer;
   }
   
-  .beast:hover {
+  .bedtime:hover {
     background-color: #CFF2F2;
   }
   
-  .beast {
+  .bedtime {
     background-color: #E5F2F2;
   }
   
