@@ -1,26 +1,91 @@
-var setbedtime = ""
+// // var setbedtime = ""
 
-//This whole thing doesn't work at all and needs to be rewritten for local storage. 
+// // // browser.storage.local.set({'setbedtime': 23}, function() {
+// // //     // Notify that we saved.
+// // //     message('Settings saved');
+// // //     console.log(`The bedtime is set to ${setbedtime}`)
+// // // });
+/**
+ * CSS to hide everything on the page,
+ * except for elements that have the "beastify-image" class.
+ */
+const hidePage = `body > {
+  position: fixed;
+}`;
 
-// function onError(error) {
-//     console.error(`Error: ${error}`);
-//   }
-  
-//   function sendMessageToTabs(tabs) {
-//     for (let tab of tabs) {
-//       browser.tabs.sendMessage(
-//         tab.id,
-//         {greeting: "Hi from background script"}
-//       ).then(response => {
-//         console.log("Message from the content script:");
-//         console.log(response.response);
-//       }).catch(onError);
-//     }
-//   }
-  
-//   browser.browserAction.onClicked.addListener(() => {
-//     browser.tabs.query({
-//       currentWindow: true,
-//       active: true
-//     }).then(sendMessageToTabs).catch(onError);
-//   });
+/**
+* Listen for clicks on the buttons, and send the appropriate message to
+* the content script in the page.
+*/
+function listenForClicks() {
+document.addEventListener("click", (e) => {
+
+
+/**
+* Insert the page-hiding CSS into the active tab,
+* then get the beast URL and
+* send a "beastify" message to the content script in the active tab.
+*/
+  function setBedTime(tabs) {
+    browser.tabs.insertCSS({code: hidePage}).then(() => {
+  let newBedTime = e.target.textContent;
+  browser.tabs.sendMessage(tabs[0].id, {
+  command: "setbedtime",
+  newBedTime: newBedTime
+  });
+});
+  }
+
+  /**
+  * Remove the page-hiding CSS from the active tab,
+  * send a "reset" message to the content script in the active tab.
+  */
+  function reset(tabs) {
+  browser.tabs.sendMessage(tabs[0].id, {
+  command: "reset",
+  });
+  }
+
+  /**
+  * Just log the error to the console.
+  */
+  function reportError(error) {
+  console.error(`Could not beastify: ${error}`);
+  }
+
+  /**
+  * Get the active tab,
+  * then call "beastify()" or "reset()" as appropriate.
+  */
+  if (e.target.classList.contains("btn-bedtime")) {
+  browser.tabs.query({active: true, currentWindow: true})
+  .then(setBedTime)
+  .catch(reportError);
+  }
+  else if (e.target.classList.contains("reset")) {
+  browser.tabs.query({active: true, currentWindow: true})
+  .then(reset)
+  .catch(reportError);
+  }
+  });
+}
+
+/**
+* There was an error executing the script.
+* Display the popup's error message, and hide the normal UI.
+*/
+function reportExecuteScriptError(error) {
+document.querySelector("#popup-content").classList.add("hidden");
+document.querySelector("#error-content").classList.remove("hidden");
+console.error(`Failed to execute beastify content script: ${error.message}`);
+}
+
+// /**
+// * When the popup loads, inject a content script into the active tab,
+// * and add a click handler.
+// * If we couldn't inject the script, handle the error.
+// */
+browser.tabs
+.executeScript({file: "../content_script.js"})
+.then(listenForClicks)
+.catch(reportExecuteScriptError);
