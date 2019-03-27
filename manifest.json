@@ -29,7 +29,8 @@
       ]
     }
   ],
-  "permissions" : ["storage"],
+  "permissions" : [ "activeTab",
+    "storage"],
   "options_ui": {
     "page": "options/index.html"
   }
