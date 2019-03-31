@@ -1,10 +1,3 @@
-// // var setbedtime = ""
-
-// // // browser.storage.local.set({'setbedtime': 23}, function() {
-// // //     // Notify that we saved.
-// // //     message('Settings saved');
-// // //     console.log(`The bedtime is set to ${setbedtime}`)
-// // // });
 /**
  * CSS to hide everything on the page,
  * except for elements that have the "beastify-image" class.
@@ -20,6 +13,9 @@ const hidePage = `body > {
 function listenForClicks() {
   document.addEventListener("click", (e) => {
 
+    function onError(error) {
+      console.log(error)
+    }
 
     /**
      * Insert the page-hiding CSS into the active tab,
@@ -30,7 +26,15 @@ function listenForClicks() {
       browser.tabs.insertCSS({
         code: hidePage
       }).then(() => {
-        let newBedTime = e.target.textContent;
+        //Setting the bedtime to the id, instead of to the textContent, so the text content doesn't have to be numeric.
+        let newBedTime = e.target.id;
+        localStorage.setItem("bedTime", newBedTime)
+        // browser.storage.local.set({
+        //   bedTime: newBedTime
+        // });
+        // browser.storage.local.get("bedTime")
+        //   .then(console.log(bedTime), onError);
+        //console.log("stored bedtime is " + localStorage.getItem("bedTime"))
         browser.tabs.sendMessage(tabs[0].id, {
           command: "setbedtime",
           newBedTime: newBedTime
