@@ -16,21 +16,20 @@
     "default_title": "Bedtime",
     "default_popup": "popup/set_bedtime.html"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "*://*/*"
-      ],
-      "js": [
-        "content_script.js"
-      ],
-      "css": [
-        "content_script.css"
-      ]
-    }
+  "content_scripts": [{
+    "matches": [
+      "*://*/*"
+    ],
+    "js": [
+      "content_script.js"
+    ],
+    "css": [
+      "content_script.css"
+    ]
+  }],
+  "permissions": ["activeTab",
+    "storage"
   ],
-  "permissions" : [ "activeTab",
-    "storage"],
   "options_ui": {
     "page": "options/index.html"
   }
