@@ -13,7 +13,7 @@
         return;
     }
     window.hasRun = true;
-    console.log("bt is " + defaultBT);
+    console.log("Default bt is " + defaultBT);
 
     function checkBedTime() {
         // We run the first part if the current time is past one's bed time
@@ -40,6 +40,17 @@
     }
     checkBedTime()
 
+    function onGot(item) {
+        console.log(item);
+    }
+
+    function onError(error) {
+        console.log(`Error: ${error}`);
+    }
+
+    let gettingItem = browser.storage.local.get();
+
+
     function updateBedTime(newBedTime) {
         defaultBT = parseInt(newBedTime, 10);
         checkBedTime(defaultBT)
@@ -51,7 +62,7 @@
             updateBedTime(message.newBedTime);
             /*The problem with the below is that the content script can't access local storage
             from the popup.*/
-            console.log("the stored bedtime is " + localStorage.getItem("bedTime"));
+            gettingItem.then(onGot, onError);
             alert(message.newBedTime + ' bedtime received!');
         } else if (message.command === "reset") {
             alert('reset message received')
