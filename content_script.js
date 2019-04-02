@@ -2,7 +2,7 @@
 (function () {
     const d = new Date();
     const n = d.getHours();
-    let defaultBT = 23
+    let defaultBT = 22
 
     /**
      * Check and set a global guard variable.
@@ -40,6 +40,8 @@
     checkBedTime()
 
     function updateBedTime(newBedTime) {
+        // popupBedTime = localStorage.getItem("bedTime")
+        // console.log("we got this from storage" + popBedTime)
         defaultBT = parseInt(newBedTime, 10);
         checkBedTime(defaultBT)
     }

@@ -1,3 +1,6 @@
+const hidePage = `body > {
+  position: fixed;
+}`;
 /**
  * Listen for clicks on the buttons, and send the appropriate message to
  * the content script in the page.
@@ -15,14 +18,28 @@ function listenForClicks() {
      * send a "beastify" message to the content script in the active tab.
      */
     function setBedTime(tabs) {
-      //Setting the bedtime to the id, instead of to the textContent, so the text content doesn't have to be numeric.
-      const newBedTime = e.target.id;
-      browser.tabs.sendMessage(tabs[0].id, {
-        command: "setbedtime",
-        newBedTime: newBedTime
+      browser.tabs.insertCSS({
+        code: hidePage
+      }).then(() => {
+        //Setting the bedtime to the id, instead of to the textContent, so the text content doesn't have to be numeric.
+        let newBedTime = e.target.id;
+        console.log(newBedTime);
+        localStorage.setItem("bedTime", newBedTime)
+        browser.storage.local.set({
+          "testbedtime": newBedTime
+        });
+        // browser.storage.local.set({
+        //   bedTime: newBedTime
+        // });
+        // browser.storage.local.get("bedTime")
+        //   .then(console.log(bedTime), onError);
+        //console.log("stored bedtime is " + localStorage.getItem("bedTime"))
+        browser.tabs.sendMessage(tabs[0].id, {
+          command: "setbedtime",
+          newBedTime: newBedTime
+        });
       });
-
-    };
+    }
 
     /**
      * Just log the error to the console.
