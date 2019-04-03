@@ -23,17 +23,8 @@ function listenForClicks() {
       }).then(() => {
         //Setting the bedtime to the id, instead of to the textContent, so the text content doesn't have to be numeric.
         let newBedTime = e.target.id;
-        console.log(newBedTime);
-        localStorage.setItem("bedTime", newBedTime)
-        browser.storage.local.set({
-          "testbedtime": newBedTime
-        });
-        // browser.storage.local.set({
-        //   bedTime: newBedTime
-        // });
-        // browser.storage.local.get("bedTime")
-        //   .then(console.log(bedTime), onError);
-        //console.log("stored bedtime is " + localStorage.getItem("bedTime"))
+        // localStorage.setItem("testBedTime", newBedTime)
+        console.log("from the popup script " + newBedTime)
         browser.tabs.sendMessage(tabs[0].id, {
           command: "setbedtime",
           newBedTime: newBedTime
