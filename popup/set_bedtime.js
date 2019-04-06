@@ -23,7 +23,6 @@ function listenForClicks() {
       }).then(() => {
         //Setting the bedtime to the id, instead of to the textContent, so the text content doesn't have to be numeric.
         let newBedTime = e.target.id;
-        // localStorage.setItem("testBedTime", newBedTime)
         console.log("from the popup script " + newBedTime)
         browser.tabs.sendMessage(tabs[0].id, {
           command: "setbedtime",
@@ -60,7 +59,7 @@ function listenForClicks() {
 function reportExecuteScriptError(error) {
   document.querySelector("#popup-content").classList.add("hidden");
   document.querySelector("#error-content").classList.remove("hidden");
-  console.error(`Failed to execute beastify content script: ${error.message}`);
+  console.error(`Failed to execute bedtime! ${error.message}`);
 }
 
 // /**
