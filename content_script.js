@@ -2,26 +2,35 @@
 (function () {
     const d = new Date();
     const n = d.getHours();
-    let defaultBT = 20
+    let defaultBT = 16;
+    let storedBT;
+    let messagedBT;
+    let checkedBT;
 
-    /**
-     * Check and set a global guard variable.
-     * If this content script is injected into the same page again,
-     * it will do nothing next time.
-     */
-    if (window.hasRun) {
-        return;
+
+    function onGot(item) {
+        storedBT = item.testbedtime;
+        console.log(storedBT + " from the onGot")
     }
-    window.hasRun = true;
-    console.log("Default bt is " + defaultBT);
 
-    function checkBedTime() {
+    function onError(error) {
+        console.log(`Error: ${error}`);
+    }
+
+    let gettingItem = browser.storage.local.get();
+    gettingItem.then(onGot, onError)
+        .then(chooseBedtime);
+
+
+    function checkBedTime(messagedBT) {
         // We run the first part if the current time is past one's bed time
-        if (n > defaultBT || n < 6) {
+        // chooseBedTime()
+        if (n >= messagedBT || n <= 6) {
             const sleepDiv = document.createElement("div");
             sleepDiv.textContent = "It is " + n + " o'clock. Go to Sleep!!!!";
             sleepDiv.className = 'sleepMessage';
             sleepDiv.setAttribute("id", "goToSleep");
+
             //I'm confused as to how the below is working...
             if (!document.getElementById("state-mode")) {
                 document.body.appendChild(sleepDiv);
@@ -35,37 +44,37 @@
             for (i = 0; i < sm.length; i++) {
                 sm[i].setAttribute("style", "display:none")
             }
-            console.log("checked bedtime with " + defaultBT);
+        }
+        console.log("the bedtime checked here is " + messagedBT)
+    }
+
+    function chooseBedtime() {
+        if (storedBT === undefined) {
+            //if it's undefined, use default.
+            console.log("the storedBT is" + storedBT)
+            checkBedTime(defaultBT)
+            // console.log("the checked BT is " + checkedBT)
+        } else {
+            checkBedTime(storedBT)
         }
     }
-    checkBedTime()
-
-    function onGot(item) {
-        console.log(item);
-    }
-
-    function onError(error) {
-        console.log(`Error: ${error}`);
-    }
-
-    let gettingItem = browser.storage.local.get();
-
 
     function updateBedTime(newBedTime) {
-        defaultBT = parseInt(newBedTime, 10);
-        checkBedTime(defaultBT)
-        console.log("the updated defaultBT is " + defaultBT)
+        messagedBT = parseInt(newBedTime, 10);
+        browser.storage.local.set({
+            "testbedtime": messagedBT
+        });
+        checkBedTime(messagedBT)
+
     }
+
 
     browser.runtime.onMessage.addListener((message) => {
         if (message.command === "setbedtime") {
             updateBedTime(message.newBedTime);
             /*The problem with the below is that the content script can't access local storage
             from the popup.*/
-            gettingItem.then(onGot, onError);
-            alert(message.newBedTime + ' bedtime received!');
-        } else if (message.command === "reset") {
-            alert('reset message received')
+            // alert(message.newBedTime + " o'clock bedtime received!")
         }
     });
 })();

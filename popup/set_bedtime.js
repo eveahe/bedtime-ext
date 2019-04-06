@@ -1,11 +1,6 @@
-/**
- * CSS to hide everything on the page,
- * except for elements that have the "beastify-image" class.
- */
 const hidePage = `body > {
   position: fixed;
 }`;
-
 /**
  * Listen for clicks on the buttons, and send the appropriate message to
  * the content script in the page.
@@ -28,17 +23,8 @@ function listenForClicks() {
       }).then(() => {
         //Setting the bedtime to the id, instead of to the textContent, so the text content doesn't have to be numeric.
         let newBedTime = e.target.id;
-        console.log(newBedTime);
-        localStorage.setItem("bedTime", newBedTime)
-        browser.storage.local.set({
-          "testbedtime": newBedTime
-        });
-        // browser.storage.local.set({
-        //   bedTime: newBedTime
-        // });
-        // browser.storage.local.get("bedTime")
-        //   .then(console.log(bedTime), onError);
-        //console.log("stored bedtime is " + localStorage.getItem("bedTime"))
+        // localStorage.setItem("testBedTime", newBedTime)
+        console.log("from the popup script " + newBedTime)
         browser.tabs.sendMessage(tabs[0].id, {
           command: "setbedtime",
           newBedTime: newBedTime
@@ -47,25 +33,14 @@ function listenForClicks() {
     }
 
     /**
-     * Remove the page-hiding CSS from the active tab,
-     * send a "reset" message to the content script in the active tab.
-     */
-    function reset(tabs) {
-      browser.tabs.sendMessage(tabs[0].id, {
-        command: "reset",
-      });
-    }
-
-    /**
      * Just log the error to the console.
      */
     function reportError(error) {
-      console.error(`Could not beastify: ${error}`);
+      console.error(`Something's gone wrong! ${error}`);
     }
 
     /**
      * Get the active tab,
-     * then call "beastify()" or "reset()" as appropriate.
      */
     if (e.target.classList.contains("btn-bedtime")) {
       browser.tabs.query({
@@ -73,13 +48,6 @@ function listenForClicks() {
           currentWindow: true
         })
         .then(setBedTime)
-        .catch(reportError);
-    } else if (e.target.classList.contains("reset")) {
-      browser.tabs.query({
-          active: true,
-          currentWindow: true
-        })
-        .then(reset)
         .catch(reportError);
     }
   });
@@ -100,8 +68,8 @@ function reportExecuteScriptError(error) {
 // * and add a click handler.
 // * If we couldn't inject the script, handle the error.
 // */
-browser.tabs
-  .executeScript({
+
+browser.tabs.executeScript({
     file: "../content_script.js"
   })
   .then(listenForClicks)
