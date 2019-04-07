@@ -91,6 +91,7 @@
     }
     /**
      * Below is the listener to listen for messages from the popup script.
+     * We then send whatever receive in the message to the updateBedTime function above.
      */
     browser.runtime.onMessage.addListener((message) => {
         if (message.command === "setbedtime") {
