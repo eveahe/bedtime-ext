@@ -1,16 +1,27 @@
-//Start of my super cool browser extension code.
+/**
+ * The start of the super cool browser extension. 
+ * Note that the whole content script is wrapped in a function. 
+ */
 (function () {
     const d = new Date();
     const n = d.getHours();
-    let defaultBT = 16;
-    let storedBT;
+    /**
+     * Here we have three bedtime variables. 
+     * The first is the default, defaultBT, that comes preloaded with the extension.
+     * The second, messagedBT, is the bedtime sent in a message from the popup when a user changes the time there.
+     * The third, storedBT, is the bedtime that is then added to local storage from the popup.
+     * The storedBT should persist across tabs. 
+     */
+    let defaultBT = 23;
     let messagedBT;
-    let checkedBT;
+    let storedBT;
 
-
+    /**
+     * Next two functions OnGot and OnError, as well as the gettingItem variable
+     * All deal with getting the bedtime from local storage.
+     */
     function onGot(item) {
-        storedBT = item.testbedtime;
-        console.log(storedBT + " from the onGot")
+        storedBT = item.storedbedtime;
     }
 
     function onError(error) {
@@ -23,58 +34,68 @@
 
 
     function checkBedTime(messagedBT) {
-        // We run the first part if the current time is past one's bed time
-        // chooseBedTime()
-        if (n >= messagedBT || n <= 6) {
+        /**
+         * We now check if the current time is past one's bed time.
+         * Note the special case if the time is past midnight and before 6 am.
+         * If it is past that time, we create our sleep message.
+         * We check to see if the div has already been created, to avoid duplicates.
+         * The sleep message is then made visible/hidden depending on the time.
+         */
+        if (n >= messagedBT || n < 6) {
             const sleepDiv = document.createElement("div");
             sleepDiv.textContent = "It is " + n + " o'clock. Go to Sleep!!!!";
             sleepDiv.className = 'sleepMessage';
             sleepDiv.setAttribute("id", "goToSleep");
-
-            //I'm confused as to how the below is working...
-            if (!document.getElementById("state-mode")) {
+            var gts = document.getElementById("goToSleep");
+            if (!gts) {
                 document.body.appendChild(sleepDiv);
             } else {
-                sleepDiv.setAttribute("style", "display:null")
+                gts.setAttribute("style", "visibility:visible");
             }
         } else {
-            //Below we are hiding the sleepMessage div's if it is later than the bedtime.
-            //Need to change this to instead show the above if it's created and stop creating duplicate divs, it seems messy.
-            var sm = document.body.getElementsByClassName("sleepMessage")
-            for (i = 0; i < sm.length; i++) {
-                sm[i].setAttribute("style", "display:none")
-            }
+            /**
+             * Below we are hiding the sleepMessage div if it is later than the bedtime.
+             */
+            document.getElementById("goToSleep").setAttribute("style", "visibility:hidden");
         }
-        console.log("the bedtime checked here is " + messagedBT)
+        console.log("the bedtime checked here is " + messagedBT + " and the n used is " + n)
+        console.log(n <= 6)
+        console.log(n >= messagedBT)
+        console.log(messagedBT)
+        console.log(n >= messagedBT && n > 20)
     }
-
+    /**
+     * Below is the logic defining which of the BTs to use (stored vs default.)
+     * If the storedBT is undefined, we use default
+     */
     function chooseBedtime() {
         if (storedBT === undefined) {
-            //if it's undefined, use default.
-            console.log("the storedBT is" + storedBT)
+            console.log("the default BT is" + defaultBT)
             checkBedTime(defaultBT)
-            // console.log("the checked BT is " + checkedBT)
         } else {
             checkBedTime(storedBT)
         }
     }
 
+    /**
+     * Below we are updaeted the storedBT variable with the BT received from the popup in the message.
+     * Note that we have have to parse the BT as an integer so it can be compared to current time.
+     */
     function updateBedTime(newBedTime) {
         messagedBT = parseInt(newBedTime, 10);
         browser.storage.local.set({
-            "testbedtime": messagedBT
+            "storedbedtime": messagedBT
         });
         checkBedTime(messagedBT)
 
     }
-
-
+    /**
+     * Below is the listener to listen for messages from the popup script.
+     * We then send whatever receive in the message to the updateBedTime function above.
+     */
     browser.runtime.onMessage.addListener((message) => {
         if (message.command === "setbedtime") {
             updateBedTime(message.newBedTime);
-            /*The problem with the below is that the content script can't access local storage
-            from the popup.*/
-            // alert(message.newBedTime + " o'clock bedtime received!")
         }
     });
 })();
