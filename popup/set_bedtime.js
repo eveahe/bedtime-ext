@@ -13,17 +13,15 @@ function listenForClicks() {
     }
 
     /**
-     * Insert the page-hiding CSS into the active tab,
-     * then get the beast URL and
-     * send a "beastify" message to the content script in the active tab.
+     * REMOVE THE PAGE HIDING CSS SOMEHOW!!
+     * Setting the bedtime to the id, instead of to the textContent, so the text content doesn't have to be numeric.
+     * We are then sending this id as a message to the content script. 
      */
     function setBedTime(tabs) {
       browser.tabs.insertCSS({
         code: hidePage
       }).then(() => {
-        //Setting the bedtime to the id, instead of to the textContent, so the text content doesn't have to be numeric.
         let newBedTime = e.target.id;
-        console.log("from the popup script " + newBedTime)
         browser.tabs.sendMessage(tabs[0].id, {
           command: "setbedtime",
           newBedTime: newBedTime
