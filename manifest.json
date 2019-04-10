@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "bedtime",
   "description": "An extension remind you/me to get off the internet and to go to sleep",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "icons": {
     "64": "icons/icon.png"
   },
