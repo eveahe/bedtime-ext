@@ -1,8 +1,9 @@
 # Bedtime Extension
+![screenshot of the browser extension]((images/bedtime-extension.png))
 ## What is it?
 Bedtime is an extension remind you/me to get off the internet and to go to sleep. The extension displays a warning on the lower right hand of a website, telling you well, to go to sleep, if you browse the web after your bedtime.
 
-The browser extension can be installed from Firefox Add-ons https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Anatomy_of_a_WebExtension.
+The browser extension can be installed from Firefox Add-ons: https://addons.mozilla.org/en-US/firefox/addon/bedtime/.
 
 After installing the browser extension, you can set your bedtime in the using the popup in the browser bar. The options are 9 pm, 10 pm, 11 pm and midnight. If you'd like to set the bedtime later, feel free to fork this repo or open an issue!
 
@@ -19,7 +20,7 @@ The `content_script.js` script runs on every page you visit, checking whether th
 
 The `popup.js` script listens to clicks to the popup and then sends the storedbedtime to the `content_script.js` file. 
 
-## Thanks to
-All those at Codebar.io and Web Frontend Co-Learning meetups who helped me talking through learning how to make an extension! 
+## Thanks to:
+All those at Codebar.io and Web Frontend Co-Learning meetups who helped me talking through learning how to make an extension!
 
 Also thanks to all the folks who wrote the helpful guide at https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Anatomy_of_a_WebExtension. 
