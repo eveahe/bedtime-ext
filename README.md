@@ -1,5 +1,5 @@
 # Bedtime Extension
-![screenshot of the browser extension]((images/bedtime-extension.png))
+![screenshot of the browser extension](images/bedtime-extension.png)
 ## What is it?
 Bedtime is an extension remind you/me to get off the internet and to go to sleep. The extension displays a warning on the lower right hand of a website, telling you well, to go to sleep, if you browse the web after your bedtime.
 
